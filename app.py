@@ -11,9 +11,9 @@ from sklearn.cluster import KMeans, AgglomerativeClustering
 from sklearn.linear_model import LogisticRegression
 from haversine import haversine, Unit
 
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.optimizers import Adam
+# from tensorflow.keras.models import Sequential
+# from tensorflow.keras.layers import Dense
+# from tensorflow.keras.optimizers import Adam
 
 st.title("Food Delivery Time Prediction & Clustering")
 
@@ -134,63 +134,63 @@ if uploaded_file is not None:
 
     st.header("Neural Network Models")
 
-    # Neural Network 1
-    model = Sequential([
-        Dense(64, activation='relu', input_dim=X_train.shape[1]),
-        Dense(32, activation='relu'),
-        Dense(1, activation='sigmoid')
-    ])
+    # # Neural Network 1
+    # model = Sequential([
+    #     Dense(64, activation='relu', input_dim=X_train.shape[1]),
+    #     Dense(32, activation='relu'),
+    #     Dense(1, activation='sigmoid')
+    # ])
 
-    model.compile(
-        optimizer=Adam(learning_rate=0.001),
-        loss='binary_crossentropy',
-        metrics=['accuracy']
-    )
+    # model.compile(
+    #     optimizer=Adam(learning_rate=0.001),
+    #     loss='binary_crossentropy',
+    #     metrics=['accuracy']
+    # )
 
-    with st.spinner("Training Neural Network 1..."):
-        model.fit(
-            X_train, y_train,
-            epochs=30,
-            batch_size=16,
-            validation_split=0.2,
-            verbose=0
-        )
+    # with st.spinner("Training Neural Network 1..."):
+    #     model.fit(
+    #         X_train, y_train,
+    #         epochs=30,
+    #         batch_size=16,
+    #         validation_split=0.2,
+    #         verbose=0
+    #     )
 
-    y_pred_nn = (model.predict(X_test) > 0.5).astype(int)
+    # y_pred_nn = (model.predict(X_test) > 0.5).astype(int)
 
-    st.subheader("Neural Network 1 Results")
-    st.write("Accuracy:", accuracy_score(y_test, y_pred_nn))
-    st.write("Precision:", precision_score(y_test, y_pred_nn))
-    st.write("Recall:", recall_score(y_test, y_pred_nn))
-    st.write("F1 Score:", f1_score(y_test, y_pred_nn))
+    # st.subheader("Neural Network 1 Results")
+    # st.write("Accuracy:", accuracy_score(y_test, y_pred_nn))
+    # st.write("Precision:", precision_score(y_test, y_pred_nn))
+    # st.write("Recall:", recall_score(y_test, y_pred_nn))
+    # st.write("F1 Score:", f1_score(y_test, y_pred_nn))
 
-    # Neural Network 2
-    model2 = Sequential([
-        Dense(128, activation='relu', input_dim=X_train.shape[1]),
-        Dense(64, activation='relu'),
-        Dense(32, activation='relu'),
-        Dense(1, activation='sigmoid')
-    ])
+    # # Neural Network 2
+    # model2 = Sequential([
+    #     Dense(128, activation='relu', input_dim=X_train.shape[1]),
+    #     Dense(64, activation='relu'),
+    #     Dense(32, activation='relu'),
+    #     Dense(1, activation='sigmoid')
+    # ])
 
-    model2.compile(
-        optimizer=Adam(learning_rate=0.0005),
-        loss='binary_crossentropy',
-        metrics=['accuracy']
-    )
+    # model2.compile(
+    #     optimizer=Adam(learning_rate=0.0005),
+    #     loss='binary_crossentropy',
+    #     metrics=['accuracy']
+    # )
 
-    with st.spinner("Training Neural Network 2..."):
-        model2.fit(
-            X_train, y_train,
-            epochs=50,
-            batch_size=8,
-            validation_split=0.2,
-            verbose=0
-        )
+    # with st.spinner("Training Neural Network 2..."):
+    #     model2.fit(
+    #         X_train, y_train,
+    #         epochs=50,
+    #         batch_size=8,
+    #         validation_split=0.2,
+    #         verbose=0
+    #     )
 
-    y_pred_nn2 = (model2.predict(X_test) > 0.5).astype(int)
+    # y_pred_nn2 = (model2.predict(X_test) > 0.5).astype(int)
 
-    st.subheader("Neural Network 2 Results")
-    st.write("Accuracy:", accuracy_score(y_test, y_pred_nn2))
-    st.write("Precision:", precision_score(y_test, y_pred_nn2))
-    st.write("Recall:", recall_score(y_test, y_pred_nn2))
-    st.write("F1 Score:", f1_score(y_test, y_pred_nn2))
+    # st.subheader("Neural Network 2 Results")
+    # st.write("Accuracy:", accuracy_score(y_test, y_pred_nn2))
+    # st.write("Precision:", precision_score(y_test, y_pred_nn2))
+    # st.write("Recall:", recall_score(y_test, y_pred_nn2))
+    # st.write("F1 Score:", f1_score(y_test, y_pred_nn2))
