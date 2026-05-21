@@ -4,8 +4,4 @@ numpy
 matplotlib
 scikit-learn
 scipy
-<<<<<<< HEAD
 haversine
-=======
-haversine
->>>>>>> 98b2f4a27035654db11ade2754de52bb8549a8e8
