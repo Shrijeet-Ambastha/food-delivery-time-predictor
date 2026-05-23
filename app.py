@@ -17,13 +17,16 @@ from haversine import haversine, Unit
 
 st.title("Food Delivery Time Prediction & Clustering")
 
-uploaded_file = st.file_uploader("Upload Food_Delivery_Time_Prediction.csv", type=["csv"])
+df = pd.read_csv("Food_Delivery_Time_Prediction.csv")
+st.write("Dataset Preview")
+st.dataframe(df.head())
 
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
+# uploaded_file = st.file_uploader("Upload Food_Delivery_Time_Prediction.csv", type=["csv"])
+# if uploaded_file is not None:
+#     df = pd.read_csv(uploaded_file)
 
-    st.write("Dataset Preview")
-    st.dataframe(df.head())
+st.write("Dataset Preview")
+st.dataframe(df.head())
 
     # preprocessing
     df.fillna(df.mean(numeric_only=True), inplace=True)
@@ -132,7 +135,7 @@ if uploaded_file is not None:
     st.write("Recall:", recall_score(y_test, y_pred_lr))
     st.write("F1 Score:", f1_score(y_test, y_pred_lr))
 
-    st.header("Neural Network Models")
+    # st.header("Neural Network Models")
 
     # # Neural Network 1
     # model = Sequential([
