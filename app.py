@@ -28,112 +28,112 @@ st.dataframe(df.head())
 st.write("Dataset Preview")
 st.dataframe(df.head())
 
-    # preprocessing
-    df.fillna(df.mean(numeric_only=True), inplace=True)
+# preprocessing
+df.fillna(df.mean(numeric_only=True), inplace=True)
 
-    median_time = df['Delivery_Time'].median()
-    df['Target'] = (df['Delivery_Time'] > median_time).astype(int)
+median_time = df['Delivery_Time'].median()
+df['Target'] = (df['Delivery_Time'] > median_time).astype(int)
 
-    df[['Lat1','Lon1']] = df['Customer_Location'].str.strip('()').str.split(',', expand=True).astype(float)
-    df[['Lat2','Lon2']] = df['Restaurant_Location'].str.strip('()').str.split(',', expand=True).astype(float)
+df[['Lat1','Lon1']] = df['Customer_Location'].str.strip('()').str.split(',', expand=True).astype(float)
+df[['Lat2','Lon2']] = df['Restaurant_Location'].str.strip('()').str.split(',', expand=True).astype(float)
 
-    df['Distance_km'] = df.apply(
-        lambda row: haversine(
-            (row['Lat1'], row['Lon1']),
-            (row['Lat2'], row['Lon2']),
-            unit=Unit.KILOMETERS
-        ),
-        axis=1
-    )
+df['Distance_km'] = df.apply(
+    lambda row: haversine(
+        (row['Lat1'], row['Lon1']),
+        (row['Lat2'], row['Lon2']),
+        unit=Unit.KILOMETERS
+    ),
+    axis=1
+)
 
-    scaler = MinMaxScaler()
-    df[['Distance', 'Delivery_Time']] = scaler.fit_transform(df[['Distance', 'Delivery_Time']])
+scaler = MinMaxScaler()
+df[['Distance', 'Delivery_Time']] = scaler.fit_transform(df[['Distance', 'Delivery_Time']])
 
-    df = pd.get_dummies(df, columns=[
-        'Weather_Conditions',
-        'Traffic_Conditions',
-        'Order_Priority',
-        'Order_Time',
-        'Vehicle_Type'
-    ])
+df = pd.get_dummies(df, columns=[
+    'Weather_Conditions',
+    'Traffic_Conditions',
+    'Order_Priority',
+    'Order_Time',
+    'Vehicle_Type'
+])
 
-    X_cluster = df.drop([
-        'Order_ID',
-        'Delivery_Time',
-        'Customer_Location',
-        'Restaurant_Location'
-    ], axis=1)
+X_cluster = df.drop([
+    'Order_ID',
+    'Delivery_Time',
+    'Customer_Location',
+    'Restaurant_Location'
+], axis=1)
 
-    scaler2 = StandardScaler()
-    X_scaled = scaler2.fit_transform(X_cluster)
+scaler2 = StandardScaler()
+X_scaled = scaler2.fit_transform(X_cluster)
 
-    st.header("Clustering")
+st.header("Clustering")
 
-    # elbow method
-    wcss = []
-    for i in range(1, 8):
-        kmeans = KMeans(n_clusters=i, random_state=42)
-        kmeans.fit(X_scaled)
-        wcss.append(kmeans.inertia_)
+# elbow method
+wcss = []
+for i in range(1, 8):
+    kmeans = KMeans(n_clusters=i, random_state=42)
+    kmeans.fit(X_scaled)
+    wcss.append(kmeans.inertia_)
 
-    fig1, ax1 = plt.subplots()
-    ax1.plot(range(1, 8), wcss, marker='o')
-    ax1.set_title("Elbow Method")
-    st.pyplot(fig1)
+fig1, ax1 = plt.subplots()
+ax1.plot(range(1, 8), wcss, marker='o')
+ax1.set_title("Elbow Method")
+st.pyplot(fig1)
 
-    # kmeans
-    kmeans = KMeans(n_clusters=3, random_state=42)
-    df['Cluster_KMeans'] = kmeans.fit_predict(X_scaled)
+# kmeans
+kmeans = KMeans(n_clusters=3, random_state=42)
+df['Cluster_KMeans'] = kmeans.fit_predict(X_scaled)
 
-    fig2, ax2 = plt.subplots()
-    ax2.scatter(df['Distance'], df['Delivery_Time'], c=df['Cluster_KMeans'])
-    ax2.set_title("KMeans Clustering")
-    st.pyplot(fig2)
+fig2, ax2 = plt.subplots()
+ax2.scatter(df['Distance'], df['Delivery_Time'], c=df['Cluster_KMeans'])
+ax2.set_title("KMeans Clustering")
+st.pyplot(fig2)
 
-    # dendrogram
-    fig3, ax3 = plt.subplots(figsize=(10, 6))
-    sch.dendrogram(sch.linkage(X_scaled, method='ward'))
-    st.pyplot(fig3)
+# dendrogram
+fig3, ax3 = plt.subplots(figsize=(10, 6))
+sch.dendrogram(sch.linkage(X_scaled, method='ward'))
+st.pyplot(fig3)
 
-    # hierarchical
-    hc = AgglomerativeClustering(n_clusters=3, linkage='ward')
-    df['Cluster_HC'] = hc.fit_predict(X_scaled)
+# hierarchical
+hc = AgglomerativeClustering(n_clusters=3, linkage='ward')
+df['Cluster_HC'] = hc.fit_predict(X_scaled)
 
-    fig4, ax4 = plt.subplots()
-    ax4.scatter(df['Distance'], df['Delivery_Time'], c=df['Cluster_HC'])
-    ax4.set_title("Hierarchical Clustering")
-    st.pyplot(fig4)
+fig4, ax4 = plt.subplots()
+ax4.scatter(df['Distance'], df['Delivery_Time'], c=df['Cluster_HC'])
+ax4.set_title("Hierarchical Clustering")
+st.pyplot(fig4)
 
-    st.header("Classification")
+st.header("Classification")
 
-    X = df.drop([
-        'Order_ID',
-        'Delivery_Time',
-        'Target',
-        'Customer_Location',
-        'Restaurant_Location'
-    ], axis=1)
+X = df.drop([
+    'Order_ID',
+    'Delivery_Time',
+    'Target',
+    'Customer_Location',
+    'Restaurant_Location'
+], axis=1)
 
-    y = df['Target']
+y = df['Target']
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 
-    scaler3 = StandardScaler()
-    X_train = scaler3.fit_transform(X_train)
-    X_test = scaler3.transform(X_test)
+scaler3 = StandardScaler()
+X_train = scaler3.fit_transform(X_train)
+X_test = scaler3.transform(X_test)
 
-    # Logistic Regression
-    lr = LogisticRegression()
-    lr.fit(X_train, y_train)
-    y_pred_lr = lr.predict(X_test)
+# Logistic Regression
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+y_pred_lr = lr.predict(X_test)
 
-    st.subheader("Logistic Regression Results")
-    st.write("Accuracy:", accuracy_score(y_test, y_pred_lr))
-    st.write("Precision:", precision_score(y_test, y_pred_lr))
-    st.write("Recall:", recall_score(y_test, y_pred_lr))
-    st.write("F1 Score:", f1_score(y_test, y_pred_lr))
+st.subheader("Logistic Regression Results")
+st.write("Accuracy:", accuracy_score(y_test, y_pred_lr))
+st.write("Precision:", precision_score(y_test, y_pred_lr))
+st.write("Recall:", recall_score(y_test, y_pred_lr))
+st.write("F1 Score:", f1_score(y_test, y_pred_lr))
 
     # st.header("Neural Network Models")
 
